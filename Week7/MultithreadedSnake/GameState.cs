@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Snake
 {
@@ -32,6 +33,24 @@ namespace Snake
             }
         }
 
+        private void DrawAndMoveGameObjects()
+        {
+            while (true)
+            {
+                // move and other logic
+                serpent.Clear();
+                serpent.Move();
+                CheckFoodCatch();
+
+                // draw
+                serpent.Draw();
+                food.Draw();
+
+                // This parameter defines speed of movement
+                Thread.Sleep(200);
+            }
+        }
+
         public void StartGame()
         {
             run = true;
@@ -39,33 +58,36 @@ namespace Snake
             // draw it only once
             wall.Draw();
 
+            ThreadStart threadStart = new ThreadStart(DrawAndMoveGameObjects);
+            Thread moveDrawThread = new Thread(threadStart);
+            // run the thread
+            moveDrawThread.Start();
+
+            // balance = 10 000 -> 15 000 -> 9000
+
+            // op1: add 5000 = (1) get balance; (2) balance = (1) + 5000
+
+            // op2: pay 1000 (mobile) = (1) get balance; (2) balance = (1) - 1000
+
             while (run)
             {
-                serpent.Draw();
-                food.Draw();
+                // leads to many errors
+                //DrawAndMoveGameObjects();
                 ConsoleKeyInfo pressedKey = Console.ReadKey();
                 switch (pressedKey.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        // Clear before moving because if serpent moves first, we cannot clear properly
-                        serpent.Clear();
-                        serpent.Move(Direction.Up);
-                        CheckFoodCatch();
+                        // set movement direction
+                        serpent.ChangeDirection(Direction.Up);
                         break;
                     case ConsoleKey.DownArrow:
-                        serpent.Clear();
-                        serpent.Move(Direction.Down);
-                        CheckFoodCatch();
+                        serpent.ChangeDirection(Direction.Down);
                         break;
                     case ConsoleKey.LeftArrow:
-                        serpent.Clear();
-                        serpent.Move(Direction.Left);
-                        CheckFoodCatch();
+                        serpent.ChangeDirection(Direction.Left);
                         break;
                     case ConsoleKey.RightArrow:
-                        serpent.Clear();
-                        serpent.Move(Direction.Right);
-                        CheckFoodCatch();
+                        serpent.ChangeDirection(Direction.Right);
                         break;
                     case ConsoleKey.Escape:
                         run = false;

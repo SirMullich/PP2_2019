@@ -55,7 +55,7 @@ namespace LineDrawer
                 RectangleF rect = new RectangleF(e.Location.X - pen.Width / 2, e.Location.Y - pen.Width / 2, pen.Width, pen.Width);
                 gfx.DrawEllipse(pen, rect);
             }
-            
+
             pointStart = e.Location;
         }
     }
